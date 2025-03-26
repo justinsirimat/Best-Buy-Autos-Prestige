@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Auto Dealership Website
+
+A modern, responsive website for a luxury auto dealership, built with Next.js, TypeScript, Tailwind CSS, and Supabase.
+
+## Features
+
+- Responsive design for all device sizes
+- Vehicle inventory browsing with filters and search
+- Vehicle detail pages with specifications and features
+- Contact forms with inquiry submission
+- User authentication (signup, login, password reset)
+- Career opportunities page
+- Service center information and appointment scheduling
+- Financing calculator and options
+- Admin dashboard for monitoring inquiries and inventory
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 16.8 or later
+- npm or yarn
+- Supabase account (for database and authentication)
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd auto-dealership
+```
+
+2. Install dependencies:
+```bash
+npm install
+# or
+yarn install
+```
+
+3. Create a `.env.local` file in the root directory with your Supabase credentials:
+```
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-project-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+```
+
+4. Start the development server:
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Supabase Setup
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This project uses Supabase for the database and authentication. Follow these steps to set up your Supabase project:
 
-## Learn More
+1. Create a new project on [Supabase](https://supabase.com/).
 
-To learn more about Next.js, take a look at the following resources:
+2. Get your project URL and anon key from the API settings page.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. Set up the database schema by executing the SQL in `scripts/supabase-setup.sql` using the Supabase SQL Editor.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+4. Configure authentication in the Supabase dashboard:
+   - Enable Email Auth in Auth > Providers
+   - Set up email templates in Auth > Email Templates
+   - Configure site URL in Auth > URL Configuration
 
-## Deploy on Vercel
+5. Set up storage buckets for vehicle images:
+   - Create a new bucket named "vehicle-images" in Storage
+   - Adjust the bucket permissions for public access
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+6. Test the connection by visiting the admin page at `/admin` after setting up your `.env.local` file.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deployment
+
+The project can be deployed to any platform that supports Next.js applications. Here are some recommended options:
+
+- [Vercel](https://vercel.com/)
+- [Netlify](https://www.netlify.com/)
+- [AWS Amplify](https://aws.amazon.com/amplify/)
+
+Remember to add your environment variables to your hosting platform.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
