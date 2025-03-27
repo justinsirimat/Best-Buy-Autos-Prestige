@@ -11,10 +11,11 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
+import { ScrollFadeIn } from "@/components/ui/scroll-fade-in";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Search, Sliders, X, Fuel, Gauge, Calendar, Users, ChevronRight, FilterX } from "lucide-react";
+import { Search, Sliders, X, Fuel, Gauge, Calendar, Users, ChevronRight, FilterX, ImageIcon } from "lucide-react";
 import { supabase, isSupabaseInitialized } from "@/lib/supabase";
 
 // Sample data - in a real app, this would come from Supabase
@@ -276,75 +277,74 @@ export default function InventoryPage() {
         {/* Hero section */}
         <section className="bg-muted/30 py-12">
           <div className="container px-4 mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="max-w-2xl mx-auto text-center"
-            >
-              <h1 className="text-4xl font-bold mb-4 text-foreground">Our Premium Collection</h1>
-              <p className="text-muted-foreground mb-8">
-                Explore our handpicked selection of premium vehicles. Find your perfect match with our comprehensive search and filtering options.
-              </p>
-              
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
-                <Input 
-                  placeholder="Search by brand, model, or keyword..." 
-                  className="pl-10 h-12 rounded-full"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                {searchTerm && (
-                  <button
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                    onClick={() => setSearchTerm("")}
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                )}
+            <ScrollFadeIn>
+              <div className="max-w-2xl mx-auto text-center">
+                <h1 className="text-4xl font-bold mb-4 text-foreground">Our Premium Collection</h1>
+                <p className="text-muted-foreground mb-8">
+                  Explore our handpicked selection of premium vehicles. Find your perfect match with our comprehensive search and filtering options.
+                </p>
+                
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
+                  <Input 
+                    placeholder="Search by brand, model, or keyword..." 
+                    className="pl-10 h-12 rounded-full"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                  {searchTerm && (
+                    <button
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      onClick={() => setSearchTerm("")}
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
               </div>
-            </motion.div>
+            </ScrollFadeIn>
           </div>
         </section>
         
         {/* Filters and inventory section */}
         <section className="py-12">
           <div className="container px-4 mx-auto">
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <h2 className="text-xl font-bold">{filteredCars.length} vehicles found</h2>
-                {activeFilters > 0 && (
-                  <p className="text-sm text-muted-foreground">
-                    {activeFilters} filter{activeFilters !== 1 ? 's' : ''} active
-                  </p>
-                )}
-              </div>
-              
-              <div className="flex gap-2">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="flex items-center gap-1"
-                  onClick={() => setFiltersOpen(!filtersOpen)}
-                >
-                  <Sliders className="h-4 w-4" />
-                  <span className="hidden sm:inline">Filters</span>
-                </Button>
+            <ScrollFadeIn>
+              <div className="flex justify-between items-center mb-6">
+                <div>
+                  <h2 className="text-xl font-bold">{filteredCars.length} vehicles found</h2>
+                  {activeFilters > 0 && (
+                    <p className="text-sm text-muted-foreground">
+                      {activeFilters} filter{activeFilters !== 1 ? 's' : ''} active
+                    </p>
+                  )}
+                </div>
                 
-                {activeFilters > 0 && (
+                <div className="flex gap-2">
                   <Button 
-                    variant="ghost" 
+                    variant="outline" 
                     size="sm" 
-                    className="flex items-center gap-1 text-muted-foreground"
-                    onClick={resetFilters}
+                    className="flex items-center gap-1"
+                    onClick={() => setFiltersOpen(!filtersOpen)}
                   >
-                    <FilterX className="h-4 w-4" />
-                    <span className="hidden sm:inline">Reset</span>
+                    <Sliders className="h-4 w-4" />
+                    <span className="hidden sm:inline">Filters</span>
                   </Button>
-                )}
+                  
+                  {activeFilters > 0 && (
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="flex items-center gap-1 text-muted-foreground"
+                      onClick={resetFilters}
+                    >
+                      <FilterX className="h-4 w-4" />
+                      <span className="hidden sm:inline">Reset</span>
+                    </Button>
+                  )}
+                </div>
               </div>
-            </div>
+            </ScrollFadeIn>
             
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
               {/* Filters sidebar */}
@@ -461,20 +461,22 @@ export default function InventoryPage() {
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                   {filteredCars.length > 0 ? (
                     filteredCars.map((car, index) => (
-                      <motion.div
-                        key={car.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: index * 0.05 }}
-                      >
+                      <ScrollFadeIn key={car.id} delay={index * 0.1}>
                         <Card className="h-full overflow-hidden hover:shadow-lg transition-shadow">
                           <div className="relative w-full pt-[56.25%]">
-                            <Image
-                              src={car.image}
-                              alt={car.title}
-                              fill
-                              className="object-cover transition-transform hover:scale-105 duration-500"
-                            />
+                            {car.image ? (
+                              <Image
+                                src={car.image}
+                                alt={car.title || 'Vehicle image'}
+                                fill
+                                className="object-cover transition-transform hover:scale-105 duration-500"
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                              />
+                            ) : (
+                              <div className="absolute inset-0 bg-muted flex items-center justify-center">
+                                <ImageIcon className="h-12 w-12 text-muted-foreground" />
+                              </div>
+                            )}
                             <div className="absolute top-2 left-2 flex flex-wrap gap-1">
                               {car.badges && car.badges.map((badge, i) => (
                                 <Badge key={i} variant={badge === "Electric" ? "default" : "secondary"} className="text-xs">
@@ -518,7 +520,7 @@ export default function InventoryPage() {
                             </Button>
                           </CardFooter>
                         </Card>
-                      </motion.div>
+                      </ScrollFadeIn>
                     ))
                   ) : (
                     <div className="col-span-full py-20 text-center">

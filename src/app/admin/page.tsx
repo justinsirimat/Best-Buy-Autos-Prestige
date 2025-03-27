@@ -6,6 +6,9 @@ import DatabaseTest from "./database-test";
 import EnvCheck from "./env-check";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowRightIcon, ActivityLogIcon, FileTextIcon, EnvelopeOpenIcon } from "@radix-ui/react-icons";
 
 export default function AdminPage() {
   return (
@@ -42,6 +45,80 @@ export default function AdminPage() {
               </div>
             </div>
           </section>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileTextIcon className="h-5 w-5" /> Supabase Diagnostics
+                </CardTitle>
+                <CardDescription>
+                  Debug connection issues with the Supabase database
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Comprehensive tools to diagnose connection problems, check table existence,
+                  and verify your Supabase configuration.
+                </p>
+              </CardContent>
+              <CardFooter>
+                <Link href="/admin/supabase-debug" passHref>
+                  <Button variant="default" className="w-full">
+                    Open Diagnostics <ArrowRightIcon className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+              </CardFooter>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <ActivityLogIcon className="h-5 w-5" /> Inventory Management
+                </CardTitle>
+                <CardDescription>
+                  Manage vehicle inventory listings
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Add, edit, or remove vehicles from your inventory.
+                  Manage vehicle details, images, and specifications.
+                </p>
+              </CardContent>
+              <CardFooter>
+                <Link href="/admin/inventory" passHref>
+                  <Button variant="outline" className="w-full">
+                    Manage Inventory <ArrowRightIcon className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+              </CardFooter>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <EnvelopeOpenIcon className="h-5 w-5" /> Customer Inquiries
+                </CardTitle>
+                <CardDescription>
+                  View and respond to customer messages
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Review contact form submissions, test drive requests,
+                  and other customer communications.
+                </p>
+              </CardContent>
+              <CardFooter>
+                <Link href="/admin/inquiries" passHref>
+                  <Button variant="outline" className="w-full">
+                    View Inquiries <ArrowRightIcon className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+              </CardFooter>
+            </Card>
+          </div>
         </div>
       </main>
       

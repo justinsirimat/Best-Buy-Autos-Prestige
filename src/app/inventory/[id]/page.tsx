@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useParams } from "next/navigation";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
@@ -77,7 +78,8 @@ const cars = [
   }
 ];
 
-export default function CarDetailPage({ params }: { params: { id: string } }) {
+export default function CarDetailPage() {
+  const params = useParams();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("overview");
   const [activeImage, setActiveImage] = useState(0);
