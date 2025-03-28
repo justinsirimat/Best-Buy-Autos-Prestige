@@ -5,8 +5,27 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { SheetTrigger, SheetContent, Sheet } from "@/components/ui/sheet";
 import { ModeToggle } from "@/components/mode-toggle";
-import { User, Menu, X } from "lucide-react";
+import { 
+  User, 
+  Menu, 
+  X, 
+  Settings,
+  Car,
+  Users as UsersIcon,
+  MessageSquare,
+  LayoutDashboard,
+  FileText,
+  ImageIcon
+} from "lucide-react";
 import { motion } from "framer-motion";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -65,12 +84,52 @@ export function Header() {
 
           <div className="flex items-center gap-2">
             <ModeToggle />
+            
+            {/* Admin Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Settings className="h-5 w-5" />
+                  <span className="sr-only">Admin menu</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Admin Panel</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/admin" className="flex items-center">
+                    <LayoutDashboard className="mr-2 h-4 w-4" />
+                    <span>Dashboard</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/admin/manage-vehicles" className="flex items-center">
+                    <Car className="mr-2 h-4 w-4" />
+                    <span>Manage Vehicles</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/admin/add-vehicle" className="flex items-center">
+                    <ImageIcon className="mr-2 h-4 w-4" />
+                    <span>Add Vehicle</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/admin/inquiries" className="flex items-center">
+                    <MessageSquare className="mr-2 h-4 w-4" />
+                    <span>Inquiries</span>
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             <Button variant="ghost" size="icon" asChild className="hidden md:flex">
               <Link href="/login">
                 <User className="h-5 w-5" />
                 <span className="sr-only">Login</span>
               </Link>
             </Button>
+            
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="md:hidden">
@@ -96,6 +155,28 @@ export function Header() {
                     <User className="h-5 w-5" />
                     Login
                   </Link>
+                  {/* Mobile Admin Links */}
+                  <div className="pt-4 mt-4 border-t">
+                    <p className="text-sm font-medium mb-2">Admin</p>
+                    <div className="flex flex-col gap-3">
+                      <Link href="/admin" className="flex items-center text-sm">
+                        <LayoutDashboard className="mr-2 h-4 w-4" />
+                        Dashboard
+                      </Link>
+                      <Link href="/admin/manage-vehicles" className="flex items-center text-sm">
+                        <Car className="mr-2 h-4 w-4" />
+                        Manage Vehicles
+                      </Link>
+                      <Link href="/admin/add-vehicle" className="flex items-center text-sm">
+                        <ImageIcon className="mr-2 h-4 w-4" />
+                        Add Vehicle
+                      </Link>
+                      <Link href="/admin/inquiries" className="flex items-center text-sm">
+                        <MessageSquare className="mr-2 h-4 w-4" />
+                        Inquiries
+                      </Link>
+                    </div>
+                  </div>
                 </div>
               </SheetContent>
             </Sheet>

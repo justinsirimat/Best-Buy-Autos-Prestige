@@ -15,7 +15,7 @@ import { ScrollFadeIn } from "@/components/ui/scroll-fade-in";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Search, Sliders, X, Fuel, Gauge, Calendar, Users, ChevronRight, FilterX, ImageIcon } from "lucide-react";
+import { Search, Sliders, X, Fuel, Gauge, Calendar, Users, ChevronRight, FilterX, ImageIcon, Car } from "lucide-react";
 import { supabase, isSupabaseInitialized } from "@/lib/supabase";
 
 // Sample data - in a real app, this would come from Supabase
@@ -151,25 +151,27 @@ const cars = [
 ];
 
 export default function InventoryPage() {
+  // State management for filtering and search functionality
   const [filteredCars, setFilteredCars] = useState(cars);
   const [searchTerm, setSearchTerm] = useState("");
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [activeFilters, setActiveFilters] = useState(0);
   
-  // Filter states
+  // Filter states for different vehicle attributes
   const [priceRange, setPriceRange] = useState([0, 250000]);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedBodyTypes, setSelectedBodyTypes] = useState<string[]>([]);
   const [selectedFuelTypes, setSelectedFuelTypes] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [vehicles, setVehicles] = useState(cars); // Start with mock data
+  const [vehicles, setVehicles] = useState(cars);
 
+  // Extract unique values for filter options using Set to avoid duplicates
   const brands = Array.from(new Set(cars.map(car => car.brand)));
   const bodyTypes = Array.from(new Set(cars.map(car => car.bodyType)));
   const fuelTypes = Array.from(new Set(cars.map(car => car.specs?.fuelType).filter(Boolean)));
 
+  // Fetch vehicles from Supabase when component mounts
   useEffect(() => {
-    // Fetch vehicles from Supabase if initialized
     const fetchVehicles = async () => {
       if (!isSupabaseInitialized()) {
         console.log("Using mock data - Supabase not initialized");
@@ -178,17 +180,13 @@ export default function InventoryPage() {
 
       setIsLoading(true);
       try {
-        // Replace 'vehicles' with your actual table name
         const { data, error } = await supabase
           .from('vehicles')
           .select('*');
 
-        if (error) {
-          throw error;
-        }
+        if (error) throw error;
 
         if (data && data.length > 0) {
-          console.log("Loaded vehicles from Supabase:", data.length);
           setVehicles(data);
         }
       } catch (error) {
@@ -201,33 +199,28 @@ export default function InventoryPage() {
     fetchVehicles();
   }, []);
 
+  // Apply filters whenever filter states or search term changes
   useEffect(() => {
-    // Apply filters
     let filtered = vehicles.filter(car => {
-      // Search term filter
+      // Combine multiple filter conditions using logical AND
       const matchesSearch = car.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            car.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            car.model.toLowerCase().includes(searchTerm.toLowerCase());
+                          car.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          car.model.toLowerCase().includes(searchTerm.toLowerCase());
       
-      // Price range filter
       const matchesPrice = car.price >= priceRange[0] && car.price <= priceRange[1];
       
-      // Brand filter
+      // Check if car matches selected filters or if no filters are selected
       const matchesBrand = selectedBrands.length === 0 || selectedBrands.includes(car.brand);
-      
-      // Body type filter
       const matchesBodyType = selectedBodyTypes.length === 0 || selectedBodyTypes.includes(car.bodyType);
-      
-      // Fuel type filter
       const matchesFuelType = selectedFuelTypes.length === 0 || 
-                             (car.specs?.fuelType && selectedFuelTypes.includes(car.specs.fuelType));
+                           (car.specs?.fuelType && selectedFuelTypes.includes(car.specs.fuelType));
       
       return matchesSearch && matchesPrice && matchesBrand && matchesBodyType && matchesFuelType;
     });
     
     setFilteredCars(filtered);
     
-    // Count active filters
+    // Count active filters for UI feedback
     let count = 0;
     if (priceRange[0] > 0 || priceRange[1] < 250000) count++;
     if (selectedBrands.length > 0) count++;
@@ -237,6 +230,7 @@ export default function InventoryPage() {
     setActiveFilters(count);
   }, [searchTerm, priceRange, selectedBrands, selectedBodyTypes, selectedFuelTypes, vehicles]);
 
+  // Reset all filters to their default values
   const resetFilters = () => {
     setPriceRange([0, 250000]);
     setSelectedBrands([]);
@@ -245,11 +239,12 @@ export default function InventoryPage() {
     setSearchTerm("");
   };
 
+  // Toggle filter selection using array manipulation
   const toggleBrandFilter = (brand: string) => {
     setSelectedBrands(prev => 
       prev.includes(brand) 
-        ? prev.filter(b => b !== brand) 
-        : [...prev, brand]
+        ? prev.filter(b => b !== brand) // Remove if already selected
+        : [...prev, brand]              // Add if not selected
     );
   };
 
@@ -474,7 +469,7 @@ export default function InventoryPage() {
                               />
                             ) : (
                               <div className="absolute inset-0 bg-muted flex items-center justify-center">
-                                <ImageIcon className="h-12 w-12 text-muted-foreground" />
+                                <Car className="h-12 w-12 text-muted-foreground" />
                               </div>
                             )}
                             <div className="absolute top-2 left-2 flex flex-wrap gap-1">

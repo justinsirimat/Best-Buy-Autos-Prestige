@@ -1,69 +1,119 @@
+/**
+ * Database Test Component
+ * 
+ * A React component that provides a user interface for testing the Supabase database connection
+ * and verifying the existence of required database tables. This component is part of the
+ * admin dashboard and helps diagnose connection issues.
+ * 
+ * Features:
+ * - Tests database connectivity
+ * - Verifies table existence
+ * - Provides visual feedback on test results
+ * - Handles loading states and errors
+ */
+
 "use client";
 
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { testConnection } from "@/lib/test-connection";
+import { useState } from 'react';
+import { testSupabaseConnection, checkTableExists } from '@/lib/test-connection';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from '@/components/ui/button';
+import { CheckCircle2, XCircle } from 'lucide-react';
 
+// Define the shape of our test results
+interface TestResult {
+  success?: boolean;    // Whether the connection test passed
+  error?: string;       // Error message if any
+  tableExists?: boolean; // Whether required tables exist
+}
+
+/**
+ * DatabaseTest Component
+ * 
+ * Provides a user interface for testing database connectivity and structure.
+ * Uses the test-connection utilities to perform actual tests.
+ */
 export default function DatabaseTest() {
-  const [connectionStatus, setConnectionStatus] = useState<"loading" | "success" | "error" | "not-configured">("loading");
-  const [connectionError, setConnectionError] = useState<string | null>(null);
-  const [data, setData] = useState<any[] | null>(null);
+  // State for managing loading state and test results
+  const [isLoading, setIsLoading] = useState(false);
+  const [testResult, setTestResult] = useState<TestResult>({});
 
-  useEffect(() => {
-    const checkConnection = async () => {
-      try {
-        const isConnected = await testConnection();
-        
-        if (isConnected) {
-          setConnectionStatus("success");
-          setConnectionError(null);
-        } else {
-          setConnectionStatus("error");
-          setConnectionError("Failed to connect to database");
-        }
-      } catch (error: any) {
-        console.error("Connection error:", error);
-        setConnectionStatus("error");
-        setConnectionError(error?.message || "An unknown error occurred");
+  /**
+   * Runs the database connection and table existence tests
+   * Updates the UI with the results of each test phase
+   */
+  const runTest = async () => {
+    setIsLoading(true);
+    try {
+      // Phase 1: Test basic database connectivity
+      const connectionResult = await testSupabaseConnection();
+      
+      // If connection fails, show error and stop
+      if (!connectionResult.success) {
+        setTestResult({
+          success: false,
+          error: connectionResult.error
+        });
+        return;
       }
-    };
 
-    checkConnection();
-  }, []);
+      // Phase 2: Verify required tables exist
+      const tableResult = await checkTableExists('vehicles');
+      
+      // Update UI with complete test results
+      setTestResult({
+        success: true,
+        tableExists: tableResult.exists,
+        error: tableResult.error
+      });
+    } catch (error: any) {
+      // Handle any unexpected errors
+      setTestResult({
+        success: false,
+        error: error.message || 'An unexpected error occurred'
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <div className="p-8 max-w-3xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Supabase Connection Test</h1>
-      
-      <div className="mb-8">
-        <h2 className="text-xl font-semibold mb-2">Connection Status:</h2>
-        {connectionStatus === "loading" && <p>Checking connection...</p>}
-        {connectionStatus === "success" && <p className="text-green-600">✅ Connected to Supabase successfully!</p>}
-        {connectionStatus === "error" && (
-          <div>
-            <p className="text-red-600">❌ Failed to connect to Supabase</p>
-            {connectionError && (
-              <p className="text-sm text-red-500 mt-1">Error: {connectionError}</p>
-            )}
-            <div className="text-sm mt-2">
-              <p>Please check that:</p>
-              <ul className="list-disc ml-6 mt-1">
-                <li>Your .env.local file has the correct Supabase URL and API key</li>
-                <li>Your Supabase project is active</li>
-                <li>You have network connectivity to Supabase</li>
-                <li>You have created the database tables using the SQL script</li>
-              </ul>
-            </div>
-          </div>
-        )}
-      </div>
-
+    <div className="space-y-4">
+      {/* Test trigger button with loading state */}
       <Button 
-        onClick={() => window.location.reload()} 
-        variant="outline"
+        onClick={runTest} 
+        disabled={isLoading}
       >
-        Retry Connection Test
+        {isLoading ? 'Testing...' : 'Test Database Connection'}
       </Button>
+
+      {/* Conditional rendering of test results */}
+      {testResult.success !== undefined && (
+        <Alert variant={testResult.success ? "default" : "destructive"}>
+          {/* Status icon and title */}
+          <div className="flex items-center gap-2">
+            {testResult.success ? (
+              <CheckCircle2 className="h-5 w-5" />
+            ) : (
+              <XCircle className="h-5 w-5" />
+            )}
+            <AlertTitle>
+              {testResult.success ? 'Connection Successful' : 'Connection Failed'}
+            </AlertTitle>
+          </div>
+          
+          {/* Detailed test results */}
+          <AlertDescription className="mt-2">
+            {testResult.error ? (
+              testResult.error
+            ) : testResult.tableExists ? (
+              'All required tables are present in the database.'
+            ) : (
+              'Database is connected, but some required tables are missing.'
+            )}
+          </AlertDescription>
+        </Alert>
+      )}
     </div>
   );
 } 

@@ -175,12 +175,22 @@ export default function CarDetailPage() {
                 <Dialog>
                   <DialogTrigger asChild>
                     <button className="w-full relative aspect-video rounded-lg overflow-hidden">
-                      <Image
-                        src={car.images[activeImage]}
-                        alt={car.title}
-                        fill
-                        className="object-cover hover:scale-105 transition-transform duration-500"
-                      />
+                      <div className="relative w-full aspect-[16/9]">
+                        {car.images[activeImage] ? (
+                          <Image
+                            src={car.images[activeImage]}
+                            alt={car.title || 'Vehicle image'}
+                            fill
+                            priority
+                            className="object-cover rounded-lg"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          />
+                        ) : (
+                          <div className="absolute inset-0 bg-muted flex items-center justify-center rounded-lg">
+                            <Car className="h-16 w-16 text-muted-foreground" />
+                          </div>
+                        )}
+                      </div>
                       <div className="absolute inset-0 bg-gradient-to-b from-black/0 to-black/10"></div>
                       <div className="absolute bottom-4 right-4 bg-black/60 rounded-full p-2 text-white">
                         <span className="sr-only">View gallery</span>

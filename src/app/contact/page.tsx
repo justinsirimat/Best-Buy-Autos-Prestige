@@ -13,6 +13,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Phone, Mail, MapPin, Clock, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { Map } from "@/components/ui/map";
 
 export default function ContactPage() {
   const [formState, setFormState] = useState({
@@ -316,10 +317,10 @@ export default function ContactPage() {
             </div>
             
             <div className="relative h-96 rounded-lg overflow-hidden shadow-lg">
-              {/* In a real implementation, this would be a Google Maps embed */}
-              <div className="absolute inset-0 bg-muted flex items-center justify-center">
-                <p className="text-muted-foreground">Interactive Map Would Be Displayed Here</p>
-              </div>
+              <Map 
+                address="123 Luxury Drive, Prestige City, PC 12345"
+                height="384px"
+              />
             </div>
           </div>
         </section>
